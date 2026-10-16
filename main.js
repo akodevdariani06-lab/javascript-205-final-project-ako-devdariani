@@ -45,6 +45,23 @@ async function fetchRecipe(id) {
     return data;
 }
 
+async function openRecipe(id) {
+    try {
+        const recipe = await fetchRecipe(id);
+        renderRecipeDetail(recipe);
+        document.getElementById('recipeModal').hidden = false;
+    } catch (err) {
+        console.error(err);
+        document.getElementById('recipeDetail').innerHTML = `
+            <div class="empty">
+                <span class="empty__icon">😕</span>
+                <h3>Could not load recipe</h3>
+                <p class="muted">This recipe could not be loaded. Please try again.</p>
+            </div>`;
+        document.getElementById('recipeModal').hidden = false;
+    }
+}
+
 function renderRecipes(data) {
     const recipes = data.recipes;
 
@@ -197,4 +214,19 @@ document.getElementById('pagination').addEventListener('click', function (e) {
 
     const page = Number(e.target.dataset.page);
     loadRecipes(currentOptions(page));
+});
+
+document.getElementById('recipeGrid').addEventListener('click', function (e) {
+    const card = e.target.closest('.card');
+    if (!card) {
+        return;
+    }
+    openRecipe(card.dataset.id);
+});
+
+document.getElementById('recipeModal').addEventListener('click', function (e) {
+    if (!e.target.hasAttribute('data-close')) {
+        return;
+    }
+    document.getElementById('recipeModal').hidden = true;
 });
