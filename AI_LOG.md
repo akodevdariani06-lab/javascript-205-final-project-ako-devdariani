@@ -222,3 +222,17 @@ Format:
 **What I did:** Reviewed the updated openRecipe(id): the catch now writes a readable error block into #recipeDetail and opens the modal, keeping console.error, so B2 and the A2 line are complete. Confirmed the detail view is finished and set out the start of category E (favorites) — a js/storage.js file with getFavorites() and saveFavorites() plus its script tag — and recommended committing the working detail view.
 **Files changed:** none
 
+### 30 · 2026-10-16 17:42
+**Prompt:**
+> please check. did i do it right?
+**Type:** review
+**What I did:** Reviewed js/storage.js — getFavorites() with the empty guard and saveFavorites() with JSON.stringify are correct — and the index.html script tags, where js/storage.js is loaded before main.js as it should be. Set out the next step of E: adding the heart button to each card in renderRecipes, marked active from getFavorites(), and warned that the existing grid click listener will need to ignore heart clicks next.
+**Files changed:** none
+
+### 31 · 2026-10-16 18:10
+**Prompt:**
+> check and next step.
+**Type:** review
+**What I did:** Reviewed the heart button added to each card in renderRecipes — the data-fav id and the is-active class from favorites.includes(r.id) are correct. Set out the next step of E: a renderFavoriteState() helper that refreshes every [data-fav] button and the header #favCount, a toggleFavorite(id) that adds/removes the id and saves it, calling renderFavoriteState() once at startup, and guarding the grid click listener so a heart click does not open the modal.
+**Files changed:** none
+

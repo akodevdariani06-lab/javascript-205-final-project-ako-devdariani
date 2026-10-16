@@ -73,11 +73,16 @@ function renderRecipes(data) {
 
     document.getElementById('emptyState').hidden = true;
 
+    const favorites = getFavorites();
+
     const cards = recipes.map(function (r) {
+        const isFav = favorites.includes(r.id);
+
         return `
         <article class="card" data-id="${r.id}">
             <div class="card__media">
                 <img class="card__img" src="${r.image}" alt="${r.name}">
+                <button class="card__fav${isFav ? ' is-active' : ''}" data-fav="${r.id}">${isFav ? '❤️' : '🤍'}</button>
             </div>
             <div class="card__body">
                 <h3 class="card__name">${r.name}</h3>
@@ -187,10 +192,39 @@ function currentOptions(page) {
     };
 }
 
+function renderFavoriteState() {
+    const favorites = getFavorites();
+
+    document.querySelectorAll('[data-fav]').forEach(function (btn) {
+        const id = Number(btn.dataset.fav);
+        const isFav = favorites.includes(id);
+        btn.classList.toggle('is-active', isFav);
+        btn.textContent = isFav ? '❤️' : '🤍';
+    });
+
+    document.getElementById('favCount').textContent = favorites.length;
+}
+
+function toggleFavorite(id) {
+    let favorites = getFavorites();
+
+    if (favorites.includes(id)) {
+        favorites = favorites.filter(function (f) {
+            return f !== id;
+        });
+    } else {
+        favorites.push(id);
+    }
+
+    saveFavorites(favorites);
+    renderFavoriteState();
+}
+
 function init() {
     loadRecipes(currentOptions(1));
 }
 
+renderFavoriteState();
 init();
 
 document.getElementById('searchInput').addEventListener('input', function () {
@@ -217,6 +251,12 @@ document.getElementById('pagination').addEventListener('click', function (e) {
 });
 
 document.getElementById('recipeGrid').addEventListener('click', function (e) {
+    const favBtn = e.target.closest('.card__fav');
+    if (favBtn) {
+        toggleFavorite(Number(favBtn.dataset.fav));
+        return;
+    }
+
     const card = e.target.closest('.card');
     if (!card) {
         return;
