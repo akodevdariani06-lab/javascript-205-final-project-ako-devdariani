@@ -8,7 +8,7 @@ const SORTS = {
     'cookTime-asc':  { sortBy: 'cookTimeMinutes', order: 'asc'  },
 };
 
-async function fetchRecipes({ page, query, meal, sortBy, order }) {
+async function fetchRecipes({ page, query, meal, tag, sortBy, order }) {
     const skip = (page - 1) * PAGE_SIZE;
 
     let url;
@@ -16,6 +16,8 @@ async function fetchRecipes({ page, query, meal, sortBy, order }) {
         url = `${API}/recipes/search?q=${query}&limit=${PAGE_SIZE}&skip=${skip}`;
     } else if (meal) {
         url = `${API}/recipes/meal-type/${meal}?limit=${PAGE_SIZE}&skip=${skip}`;
+    } else if (tag) {
+        url = `${API}/recipes/tag/${tag}?limit=${PAGE_SIZE}&skip=${skip}`;
     } else {
         url = `${API}/recipes?limit=${PAGE_SIZE}&skip=${skip}`;
     }
@@ -43,6 +45,27 @@ async function fetchRecipe(id) {
 
     const data = await response.json();
     return data;
+}
+
+async function fetchTags() {
+    const response = await fetch(`${API}/recipes/tags`);
+
+    if (!response.ok) {
+        throw new Error('Request failed: ' + response.status);
+    }
+
+    return response.json();
+}
+
+function renderTags(tags) {
+    const select = document.getElementById('tagSelect');
+
+    tags.forEach(function (tag) {
+        const option = document.createElement('option');
+        option.value = tag;
+        option.textContent = tag;
+        select.appendChild(option);
+    });
 }
 
 async function openRecipe(id) {
@@ -164,6 +187,8 @@ function showError() {
 
 async function loadRecipes(options) {
     const meta = document.getElementById('pageMeta');
+    document.getElementById('emptyTitle').textContent = 'No recipes found';
+    document.getElementById('emptyText').textContent = 'Try a different search or filter.';
     meta.textContent = 'Loading…';
 
     try {
@@ -181,12 +206,14 @@ async function loadRecipes(options) {
 function currentOptions(page) {
     const query = document.getElementById('searchInput').value;
     const meal = document.getElementById('mealSelect').value;
+    const tag = document.getElementById('tagSelect').value;
     const sort = SORTS[document.getElementById('sortSelect').value] || {};
 
     return {
         page: page,
         query: query,
         meal: meal,
+        tag: tag,
         sortBy: sort.sortBy,
         order: sort.order,
     };
@@ -221,24 +248,99 @@ function toggleFavorite(id) {
 }
 
 function init() {
+    document.getElementById('pageTitle').textContent = 'All recipes';
     loadRecipes(currentOptions(1));
 }
 
+async function showFavorites() {
+    const meta = document.getElementById('pageMeta');
+    const ids = getFavorites();
+
+    document.getElementById('pageTitle').textContent = 'Favorites';
+    document.getElementById('pagination').innerHTML = '';
+
+    if (ids.length === 0) {
+        document.getElementById('recipeGrid').innerHTML = '';
+        document.getElementById('emptyTitle').textContent = 'No favorites yet';
+        document.getElementById('emptyText').textContent = 'Tap the heart on a recipe to save it here.';
+        document.getElementById('emptyState').hidden = false;
+        meta.textContent = '';
+        return;
+    }
+
+    meta.textContent = 'Loading…';
+
+    try {
+        const recipes = await Promise.all(ids.map(function (id) {
+            return fetchRecipe(id);
+        }));
+
+        meta.textContent = 'Showing ' + recipes.length + ' favorites';
+        renderRecipes({ recipes: recipes });
+    } catch (err) {
+        console.error(err);
+        meta.textContent = '';
+        showError();
+    }
+}
+
 renderFavoriteState();
+fetchTags().then(renderTags).catch(function (err) {
+    console.error(err);
+});
 init();
+
+document.getElementById('favLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    showFavorites();
+});
+
+document.getElementById('homeLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    init();
+});
+
+document.getElementById('addRecipeBtn').addEventListener('click', function () {
+    document.getElementById('addModal').hidden = false;
+});
 
 document.getElementById('searchInput').addEventListener('input', function () {
     document.getElementById('mealSelect').value = '';
+    document.getElementById('tagSelect').value = '';
     loadRecipes(currentOptions(1));
 });
 
 document.getElementById('mealSelect').addEventListener('change', function () {
     document.getElementById('searchInput').value = '';
+    document.getElementById('tagSelect').value = '';
+    loadRecipes(currentOptions(1));
+});
+
+document.getElementById('tagSelect').addEventListener('change', function () {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('mealSelect').value = '';
     loadRecipes(currentOptions(1));
 });
 
 document.getElementById('sortSelect').addEventListener('change', function () {
     loadRecipes(currentOptions(1));
+});
+
+document.getElementById('addForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+
+    const name = form.elements.name.value;
+    const cuisine = form.elements.cuisine.value;
+    const difficulty = form.elements.difficulty.value;
+    const instructions = form.elements.instructions.value;
+    const ingredients = form.elements.ingredients.value.split('\n').filter(function (line) {
+        return line.trim() !== '';
+    });
+
+    console.log(name, cuisine, difficulty, instructions);
+    console.log(ingredients, ingredients.length);
 });
 
 document.getElementById('pagination').addEventListener('click', function (e) {
@@ -269,4 +371,11 @@ document.getElementById('recipeModal').addEventListener('click', function (e) {
         return;
     }
     document.getElementById('recipeModal').hidden = true;
+});
+
+document.getElementById('addModal').addEventListener('click', function (e) {
+    if (!e.target.hasAttribute('data-close')) {
+        return;
+    }
+    document.getElementById('addModal').hidden = true;
 });
