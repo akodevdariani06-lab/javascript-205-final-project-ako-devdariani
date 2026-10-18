@@ -47,6 +47,21 @@ async function fetchRecipe(id) {
     return data;
 }
 
+async function createRecipe(recipe) {
+    const response = await fetch(`${API}/recipes/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(recipe),
+    });
+
+    if (!response.ok) {
+        throw new Error('Request failed: ' + response.status);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
 async function fetchTags() {
     const response = await fetch(`${API}/recipes/tags`);
 
@@ -247,9 +262,16 @@ function toggleFavorite(id) {
     renderFavoriteState();
 }
 
+function setActiveNav(activeId) {
+    document.getElementById('homeLink').classList.remove('is-active');
+    document.getElementById('favLink').classList.remove('is-active');
+    document.getElementById(activeId).classList.add('is-active');
+}
+
 function init() {
     document.getElementById('pageTitle').textContent = 'All recipes';
     loadRecipes(currentOptions(1));
+    setActiveNav('homeLink');
 }
 
 async function showFavorites() {
@@ -258,6 +280,7 @@ async function showFavorites() {
 
     document.getElementById('pageTitle').textContent = 'Favorites';
     document.getElementById('pagination').innerHTML = '';
+    setActiveNav('favLink');
 
     if (ids.length === 0) {
         document.getElementById('recipeGrid').innerHTML = '';
@@ -326,21 +349,69 @@ document.getElementById('sortSelect').addEventListener('change', function () {
     loadRecipes(currentOptions(1));
 });
 
-document.getElementById('addForm').addEventListener('submit', function (e) {
+document.getElementById('addForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const form = e.currentTarget;
+    const button = form.querySelector('button[type="submit"]');
 
-    const name = form.elements.name.value;
-    const cuisine = form.elements.cuisine.value;
-    const difficulty = form.elements.difficulty.value;
-    const instructions = form.elements.instructions.value;
-    const ingredients = form.elements.ingredients.value.split('\n').filter(function (line) {
-        return line.trim() !== '';
+    const fields = ['name', 'cuisine', 'difficulty', 'ingredients', 'instructions'];
+    let hasError = false;
+
+    fields.forEach(function (field) {
+        const input = form.elements[field];
+        const error = form.querySelector('[data-error="' + field + '"]');
+        const value = input.value.trim();
+
+        error.textContent = '';
+        input.classList.remove('is-invalid');
+
+        if (value === '') {
+            error.textContent = 'This field is required.';
+            input.classList.add('is-invalid');
+            hasError = true;
+        } else if (field === 'name' && value.length < 3) {
+            error.textContent = 'Please enter at least 3 characters.';
+            input.classList.add('is-invalid');
+            hasError = true;
+        }
     });
 
-    console.log(name, cuisine, difficulty, instructions);
-    console.log(ingredients, ingredients.length);
+    if (hasError) {
+        return;
+    }
+
+    button.disabled = true;
+
+    const recipe = {
+        name: form.elements.name.value.trim(),
+        cuisine: form.elements.cuisine.value.trim(),
+        difficulty: form.elements.difficulty.value,
+        ingredients: form.elements.ingredients.value.split('\n').filter(function (line) {
+            return line.trim() !== '';
+        }),
+        instructions: form.elements.instructions.value.split('\n').filter(function (line) {
+            return line.trim() !== '';
+        }),
+    };
+
+    try {
+        const created = await createRecipe(recipe);
+
+        form.reset();
+        document.getElementById('addModal').hidden = true;
+        document.getElementById('recipeDetail').innerHTML = `
+            <div class="empty">
+                <span class="empty__icon">✅</span>
+                <h3>Recipe added</h3>
+                <p class="muted">Saved as id ${created.id}.</p>
+            </div>`;
+        document.getElementById('recipeModal').hidden = false;
+    } catch (err) {
+        console.error(err);
+    } finally {
+        button.disabled = false;
+    }
 });
 
 document.getElementById('pagination').addEventListener('click', function (e) {
