@@ -1,29 +1,12 @@
-# JavaScript 205 — Final Project
+# Recipe Book
 
-> **This file is yours.** Read the assignment first. When you start working, delete everything above the line and fill in the skeleton below it with your own project.
+single page recipebook website that pulls recipes from the dummyjson API and lets you search, 
+filter by tag/meal, sort, paginate, favourite, and open full recipe details — plus add your own.
 
-**Start here:** [assignment/README.md](assignment/README.md) · **ქართულად:** [assignment/README_ka.md](assignment/README_ka.md)
-
-| | English | ქართული |
-|---|---|---|
-| Rules, how to start, how to submit | [README.md](assignment/README.md) | [README_ka.md](assignment/README_ka.md) |
-| The projects you can choose | [PROJECTS.md](assignment/PROJECTS.md) | [PROJECTS_ka.md](assignment/PROJECTS_ka.md) |
-| Every point and how it is checked | [SCORING.md](assignment/SCORING.md) | [SCORING_ka.md](assignment/SCORING_ka.md) |
-
-To begin, click **Use this template → Create a new repository** at the top of this page. Do not fork.
-
----
-
-# Project name
-
-One or two sentences: what is this app, and who is it for?
-
-- **Project:** Recipe Book / Social Feed / Online Store / my own idea
-- **Live demo:** the link, if you published it with GitHub Pages
+- **Project:** Recipe Book
 
 ## Screenshots
-
-Put at least one screenshot here. Save the image in a `docs/` folder and show it like this: `![Home page](docs/home.png)`
+![Home page](docs/home.png)
 
 ## How to run
 
@@ -32,13 +15,27 @@ Put at least one screenshot here. Save the image in a `docs/` folder and show it
 
 ## Features
 
-- …
+- Recipe grid loaded from the dummyjson API, 12 recipes per page, with pagination.
+- Search recipes by name.
+- Filter by meal type (breakfast / lunch / dinner / snack) and by tag.
+- Sort by name (A–Z), best rating, or fastest cook time.
+- Favourite recipes with a heart; saved in `localStorage` so they survive a reload. The header shows the count and a Favorites view lists them.
+- Recipe detail modal with ingredients, instructions, times, servings and calories.
+- "Add recipe" form with client-side validation (all fields required, name at least 3 characters). The submit button is disabled while the request runs, the recipe is POSTed to the API, and the server's id is shown back.
+- Loading, empty and error states for the grid.
+
 
 ## API
 
 | Request | Used for |
 |---|---|
 | `GET https://dummyjson.com/recipes?limit=12&skip=0` | The list on the home page |
+| `GET https://dummyjson.com/recipes/search?q=…` | Search by name |
+| `GET https://dummyjson.com/recipes/meal-type/{type}` | Filter by meal type |
+| `GET https://dummyjson.com/recipes/tag/{tag}` | Filter by tag |
+| `GET https://dummyjson.com/recipes/tags` | Fill the tag dropdown |
+| `GET https://dummyjson.com/recipes/{id}` | Recipe detail modal and the favorites list |
+| `POST https://dummyjson.com/recipes/add` | Submit the "Add recipe" form |
 
 ## Bonus tasks
 

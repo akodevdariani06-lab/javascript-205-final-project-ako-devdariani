@@ -383,3 +383,94 @@ Format:
 **What I did:** Confirmed the nav helper is correct: setActiveNav is defined once, removes is-active from both links and adds it to the id it is given, and is called from init() with 'homeLink' and from showFavorites() with 'favLink', so G3's active page works. Then checked delivery: today's work (index.html, main.js, AI_LOG.md) is uncommitted, the repo has only 6 commits with messages like "commit5" that do not say what changed (H1 needs 15, H2 wants real messages), and README.md is still the untouched template (H4). Next step given: commit today's work as small, well-named commits, with the git commands explained.
 **Files changed:** none
 
+### 53 · 2026-10-18 18:10
+**Prompt:**
+> ok. commit is done. whats next?
+**Type:** review
+**What I did:** Checked the commit: commit6 puts AI_LOG.md, index.html and main.js in one commit whose message says nothing about the change, and it is already on origin/main, so it must not be rewritten; explained that future commits should be small with messages that say what changed and that H1 is at 7 of 15. Read the rest of main.js and confirmed the app now covers A–G, and that A2's test case (recipe id 9999) is handled by openRecipe's try/catch. Next step given: fill in README.md, which is still the starter template (H4).
+**Files changed:** none
+
+### 54 · 2026-10-18 18:16
+**Prompt:**
+> so now i must fill readme.md?
+**Type:** plan
+**What I did:** Confirmed yes: filling README.md is the next step (H4), and repeated the first small piece — delete the template text at the top, then write the project name, one sentence about the app, and the API endpoints table — and asked again which endpoints the app calls. Reminded the student a screenshot is also needed.
+**Files changed:** none
+
+### 55 · 2026-10-18 18:22
+**Prompt:**
+> please check readme.md. did i deleted right text?
+**Type:** review
+**What I did:** Checked README.md: the blockquote, the links table and the "Use this template" line are gone, but the course heading "# JavaScript 205 — Final Project" and the "---" divider still sit above the skeleton, so the template text is not fully removed. Told the student to delete those two lines, then replace "# Project name" with their own title, write the one-sentence description and keep only one option on the Project line. Re-asked which endpoints the app calls for the API table.
+**Files changed:** none
+
+### 56 · 2026-10-18 18:27
+**Prompt:**
+> project name section done.
+**Type:** review
+**What I did:** Reviewed the top of README.md: the course heading, the "---" and the Live demo line are gone and the description sentence and Project line are correct, but the "# Project name" heading is still the placeholder and the template prompt line above the description ("One or two sentences: ...") is still there. Told the student to replace the heading with the app's real title and delete the prompt line, and noted the typo "reciepebook". Asked again for the list of endpoints for the API table.
+**Files changed:** none
+
+### 57 · 2026-10-18 18:29
+**Prompt:**
+> like this?
+**Type:** review
+**What I did:** Checked the README top: the heading now reads "# Project name:recipebook", which still contains the template words "Project name" and is written as one word, so told the student to make the heading only the app's title (e.g. "# Recipe Book") and to capitalise the description and write "recipe book" as two words. Gave more concrete help for the API table: fetchRecipes alone has four URL branches (query, meal, tag, default), so one row each, then one row each for fetchRecipe, fetchTags and createRecipe.
+**Files changed:** none
+
+### 58 · 2026-10-18 18:32
+**Prompt:**
+> and what i must do with those url when i find them?
+**Type:** explain
+**What I did:** Explained that each URL becomes one row in the README's API table — the method and URL in the first column and what the app uses it for in the second — and showed one worked example from the meal-type branch, noting that ${API} is https://dummyjson.com and PAGE_SIZE is 12. Told the student to add the remaining rows the same way.
+**Files changed:** none
+
+### 59 · 2026-10-18 18:35
+**Prompt:**
+> okey i think i found those url but i still dont understand what exactly i must do
+**Type:** explain
+**What I did:** Re-explained the API table in very concrete steps: the table already has the header, the separator and one of the student's own rows (the default list), so every request they found becomes one more line in exactly that shape; walked through replacing ${API}, wrapping the URL in backticks and describing it in the right-hand cell, and asked them to write just the search row first. Said clearly that the table wording is theirs to write and I will only check the format.
+**Files changed:** none
+
+### 60 · 2026-10-18 18:37
+**Prompt:**
+> please check did i do it right?
+**Type:** review
+**What I did:** Checked the API table: the four added lines are still raw code with ${...} placeholders and no pipe characters, so nothing renders as a table, and the last of them duplicates the existing default-list row. Showed the before/after for the search line (wrap in pipes, replace ${API} and ${PAGE_SIZE}, drop the trailing semicolon), told them to delete the duplicate row and add rows for fetchRecipe, fetchTags and createRecipe, and repeated the heading and capitalisation notes.
+**Files changed:** none
+
+### 61 · 2026-10-18 18:46
+**Prompt:**
+> okey check again api section
+**Type:** review
+**What I did:** Confirmed the API table is now correct: seven rows covering the default list, search, meal-type, tag, tags, one item by id and the POST to add, with the right methods and useful descriptions. Noted the sections still holding placeholder text (Screenshots, Features, Bonus tasks, What I would improve, AI use) and gave the next step: write the Features bullet list, one bullet per thing the user can do. Repeated that the heading still reads "# Recipebook".
+**Files changed:** none
+
+### 62 · 2026-10-18 18:52
+**Prompt:**
+> in screenshot i just need to screenshot websites page and add it?
+**Type:** explain
+**What I did:** Confirmed yes: start the site with Live Server, take a screenshot of the home page, save the file into a docs/ folder in the repository (e.g. docs/home.png) and replace the placeholder line with ![Home page](docs/home.png), explaining the picture must live in the repo, not be linked from outside. Suggested a second screenshot of the favorites or the detail modal and noted the student takes it themselves.
+**Files changed:** none
+
+### 63 · 2026-10-18 19:02
+**Prompt:**
+> i have the screenshot inside docs. can u check is it png or jpg?
+**Type:** review
+**What I did:** Checked docs/: the file's first bytes are the PNG signature (89 50 4E 47), so it is a PNG, but it is named "home.png.png" with a doubled extension. Told the student it is a PNG and to rename it to home.png (or make the README path match exactly), and noted the Screenshots section in README.md still holds the placeholder line.
+**Files changed:** none
+
+### 64 · 2026-10-18 19:06
+**Prompt:**
+> now sicne i have screenshot what i must do in screenshot section in readme.md exactly?
+**Type:** explain
+**What I did:** Told the student the exact thing to put in the Screenshots section: the single markdown line ![Home page](docs/home.png) on the empty line under "## Screenshots", explaining that the words in the square brackets are the alt text and the path in the round brackets must match the file, which they have now renamed to docs/home.png. Also noted the Features bullets are filled in.
+**Files changed:** none
+
+### 65 · 2026-10-18 19:08
+**Prompt:**
+> ok i did it please check if its right and lets finish for today
+**Type:** review
+**What I did:** Full README check: the Screenshots image line is correct and the How to run, Features and API sections are done, but line 1 still reads "# Recipe book", line 3 still starts lowercase with "recipebook", and the Bonus tasks, What I would improve and AI use sections still hold placeholder text. Since the student is stopping for the day, pointed out that README.md, AI_LOG.md and the new docs/ folder are uncommitted and told them to commit the README together with the docs folder and the AI log separately, then listed what is left for next time (the three placeholder sections, the two wording fixes, and more commits for H1).
+**Files changed:** none
+
