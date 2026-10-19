@@ -1,9 +1,7 @@
 # Recipe Book
 
-single page recipebook website that pulls recipes from the dummyjson API and lets you search, 
+single page Recipe Book website that pulls recipes from the dummyjson API and lets you search, 
 filter by tag/meal, sort, paginate, favourite, and open full recipe details — plus add your own.
-
-- **Project:** Recipe Book
 
 ## Screenshots
 ![Home page](docs/home.png)
@@ -39,12 +37,12 @@ filter by tag/meal, sort, paginate, favourite, and open full recipe details — 
 
 ## Bonus tasks
 
-Which ones you did, and where to see them.
+no bonus tasks were made.
 
 ## What I would improve
 
-Known problems, and what you would do with more time.
+I would add buttons for last and start page. Also manual saved recipes dont save in recipe list.
 
 ## AI use
 
-One or two sentences: did you use AI, and for what? The details are in `AI_LOG.md`.
+I used AI-commandcode as my tutor and guide mentor. It helped me with everything i build from scratch. gave me advices, checked the errors and bugs, helped me to build website step by step.

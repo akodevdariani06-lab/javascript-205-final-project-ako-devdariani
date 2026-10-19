@@ -159,6 +159,8 @@ function renderPagination(total, page) {
 }
 
 function renderRecipeDetail(recipe) {
+    const isFav = getFavorites().includes(recipe.id);
+
     const tags = recipe.tags.map(function (t) {
         return `<span class="tag">${t}</span>`;
     }).join('');
@@ -175,6 +177,7 @@ function renderRecipeDetail(recipe) {
         <div class="detail">
             <img class="detail__img" src="${recipe.image}" alt="${recipe.name}">
             <h2>${recipe.name}</h2>
+            <button class="detail__fav${isFav ? ' is-active' : ''}" data-fav="${recipe.id}"><span class="fav-icon">${isFav ? '❤️' : '🤍'}</span> Favourite</button>
             <div class="detail__tags">${tags}</div>
             <div class="detail__meta">
                 <span>Servings</span><span>${recipe.servings}</span>
@@ -241,7 +244,12 @@ function renderFavoriteState() {
         const id = Number(btn.dataset.fav);
         const isFav = favorites.includes(id);
         btn.classList.toggle('is-active', isFav);
-        btn.textContent = isFav ? '❤️' : '🤍';
+        const icon = btn.querySelector('.fav-icon');
+        if (icon) {
+            icon.textContent = isFav ? '❤️' : '🤍';
+        } else {
+            btn.textContent = isFav ? '❤️' : '🤍';
+        }
     });
 
     document.getElementById('favCount').textContent = favorites.length;
@@ -374,6 +382,12 @@ document.getElementById('addForm').addEventListener('submit', async function (e)
             error.textContent = 'Please enter at least 3 characters.';
             input.classList.add('is-invalid');
             hasError = true;
+        } else if (field === 'ingredients' && value.split('\n').filter(function (line) {
+            return line.trim() !== '';
+        }).length < 2) {
+            error.textContent = 'Please enter at least 2 ingredients.';
+            input.classList.add('is-invalid');
+            hasError = true;
         }
     });
 
@@ -435,6 +449,14 @@ document.getElementById('recipeGrid').addEventListener('click', function (e) {
         return;
     }
     openRecipe(card.dataset.id);
+});
+
+document.getElementById('recipeModal').addEventListener('click', function (e) {
+    const favBtn = e.target.closest('.detail__fav');
+    if (!favBtn) {
+        return;
+    }
+    toggleFavorite(Number(favBtn.dataset.fav));
 });
 
 document.getElementById('recipeModal').addEventListener('click', function (e) {
